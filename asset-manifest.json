@@ -1,16 +1,15 @@
 {
   "files": {
-    "main.css": "/snake-front/static/css/main.f855e6bc.css",
-    "main.js": "/snake-front/static/js/main.ec3112dc.js",
+    "main.css": "/snake-front/static/css/main.6a59f56a.css",
+    "main.js": "/snake-front/static/js/main.5b30cd75.js",
     "static/js/453.424148a5.chunk.js": "/snake-front/static/js/453.424148a5.chunk.js",
-    "static/media/logo-snake-svgrepo-com.svg": "/snake-front/static/media/logo-snake-svgrepo-com.a7f12f239be6c22d1fa92a7d0769a33b.svg",
     "index.html": "/snake-front/index.html",
-    "main.f855e6bc.css.map": "/snake-front/static/css/main.f855e6bc.css.map",
-    "main.ec3112dc.js.map": "/snake-front/static/js/main.ec3112dc.js.map",
+    "main.6a59f56a.css.map": "/snake-front/static/css/main.6a59f56a.css.map",
+    "main.5b30cd75.js.map": "/snake-front/static/js/main.5b30cd75.js.map",
     "453.424148a5.chunk.js.map": "/snake-front/static/js/453.424148a5.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.f855e6bc.css",
-    "static/js/main.ec3112dc.js"
+    "static/css/main.6a59f56a.css",
+    "static/js/main.5b30cd75.js"
   ]
 }

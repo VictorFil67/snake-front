@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Cell } from "./Cell";
 
 export const Game = () => {
@@ -10,9 +10,13 @@ export const Game = () => {
   //   const [direction, setDirection] = useState("LEFT");
   const [food, setFood] = useState(
     [0, 0]
-    // x: Math.floor(Math.random() * 20),
-    // y: Math.floor(Math.random() * 20),
+    // [Math.floor(Math.random() * 10), Math.floor(Math.random() * 10)]
   );
+  const directions = useMemo(
+    () => ["ArrowDown", "ArrowUp", "ArrowRight", "ArrowLeft"],
+    []
+  );
+  const [direction, setDirection] = useState("ArrowDown");
 
   for (let j = 0; j < BoardSize; j++) {
     row.push(j);
@@ -32,25 +36,76 @@ export const Game = () => {
       return position;
     }
   }
+
+  const handleKeyDown = useCallback(
+    (e) => {
+      console.log(e.key);
+      const index = directions.indexOf(e.key);
+      if (index > -1) {
+        setDirection(directions[index]);
+      }
+    },
+    [directions]
+  );
+
+  useEffect(() => {
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [handleKeyDown]);
+
+  const addFood = useCallback(() => {
+    let newFood;
+    do {
+      newFood = [
+        Math.floor(Math.random() * BoardSize),
+        Math.floor(Math.random() * BoardSize),
+      ];
+      setFood(newFood);
+      // eslint-disable-next-line no-loop-func
+    } while (snake.some((el) => el[0] === newFood[0] && el[1] === newFood[1]));
+  }, [snake]);
+
   const gameСycle = useCallback(() => {
     const timerId = setTimeout(() => {
-      console.log("first");
+      //   console.log("first");
       const newSnake = snake;
-      console.log(snake);
+      //   console.log(snake);
       let moveSnake = [];
+      switch (direction) {
+        case directions[0]:
+          moveSnake = [1, 0];
+          break;
+        case directions[1]:
+          moveSnake = [-1, 0];
+          break;
+        case directions[2]:
+          moveSnake = [0, 1];
+          break;
+        case directions[3]:
+          moveSnake = [0, -1];
+          break;
 
-      moveSnake = [1, 0];
+        default:
+          moveSnake = [1, 0];
+          break;
+      }
       const head = [
         checkSnakePosition(newSnake[snake.length - 1][0] + moveSnake[0]),
         checkSnakePosition(newSnake[snake.length - 1][1] + moveSnake[1]),
       ];
-      console.log({ head });
       newSnake.push(head);
-      //   console.log(newSnake);
-      setSnake(newSnake.slice(1));
+      let notFeed = 1;
+      if (head[0] === food[0] && head[1] === food[1]) {
+        notFeed = 0;
+        addFood();
+      }
+      setSnake(newSnake.slice(notFeed));
     }, speed);
     return timerId;
-  }, [snake]);
+  }, [snake, direction, directions, food, addFood]);
 
   useEffect(() => {
     const timerId = gameСycle();

@@ -6,11 +6,14 @@ export const Game = () => {
   const BoardSize = 10;
   let row = [];
   const board = [];
-  const speed = 500;
+  const speedInterval = 100;
+  const [speed, setSpeed] = useState(500);
   const [snake, setSnake] = useState([[1, 1]]);
   const [food, setFood] = useState([0, 0]);
   const [gameOver, setGameOver] = useState(false);
-  //   const [modal, setModal] = useState(false);
+  const [point, setPoint] = useState(0);
+  const [prevPoint, setPrevPoint] = useState(0);
+  const [feedCount, setFeedCount] = useState(0);
 
   const directions = useMemo(
     () => ["ArrowDown", "ArrowUp", "ArrowRight", "ArrowLeft", "Space"],
@@ -37,10 +40,10 @@ export const Game = () => {
 
   const handleKeyDown = useCallback(
     (e) => {
-      console.log(e.key);
-      console.log(e.code);
+      //   console.log(e.key);
+      //   console.log(e.code);
       const index = directions.indexOf(e.code);
-      console.log(directions.indexOf(e.code));
+      //   console.log(directions.indexOf(e.code));
       if (index > -1) {
         setDirection(directions[index]);
       }
@@ -99,11 +102,7 @@ export const Game = () => {
         checkSnakePosition(newSnake[snake.length - 1][1] + moveSnake[1]),
       ];
 
-      if (
-        newSnake.some(
-          (segment) => segment[0] === head[0] && segment[1] === head[1]
-        )
-      ) {
+      if (newSnake.some((el) => el[0] === head[0] && el[1] === head[1])) {
         setGameOver(true);
         clearTimeout(timerId);
         return;
@@ -111,14 +110,38 @@ export const Game = () => {
 
       newSnake.push(head);
       let notFeed = 1;
+      setPrevPoint(point);
       if (head[0] === food[0] && head[1] === food[1]) {
         notFeed = 0;
         addFood();
+        setFeedCount(feedCount + 1);
+        // console.log(feedCount);
+        if (feedCount === 0 || feedCount % 3 === 0) {
+          setPoint(point + 1);
+        } else if (feedCount === 1 || feedCount % 3 === 1) {
+          setPoint(point + 5);
+        } else if (feedCount === 2 || feedCount % 3 === 2) {
+          setPoint(point + 10);
+        }
       }
+      if (Math.floor(prevPoint / 50) < Math.floor(point / 50)) {
+        setSpeed(speed - speedInterval);
+      }
+      console.log(Math.floor(prevPoint / 100), Math.floor(point / 50));
       setSnake(newSnake.slice(notFeed));
     }, speed);
     return timerId;
-  }, [snake, direction, directions, food, addFood]);
+  }, [
+    snake,
+    direction,
+    directions,
+    food,
+    addFood,
+    point,
+    feedCount,
+    speed,
+    prevPoint,
+  ]);
 
   useEffect(() => {
     if (direction !== directions[4] && !gameOver) {
@@ -127,12 +150,10 @@ export const Game = () => {
     }
   }, [gameСycle, direction, directions, gameOver]);
 
-  //   if (gameOver) {
-  //     return <h1>Game Over!</h1>;
-  //   }
-
   return (
     <div>
+      <h1>Score: {point}</h1>
+      <h1>Speed: {1000 / speed}sell/s</h1>
       {board.map((row, indR) => {
         return (
           <div key={indR} className="row">

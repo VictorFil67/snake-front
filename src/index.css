@@ -39,16 +39,16 @@ code {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: rgba(25, 26, 21, 0.1);
+  background: rgba(25, 26, 21, 0.4);
   z-index: 2;
   overflow: auto;
 }
 .modal {
   position: relative;
   border: 2px solid red;
-  padding: 0 50px;
+  padding: 0 30px;
   color: red;
-  font-size: 48px;
+  font-size: 36px;
   background-color: green;
   border-radius: 14px;
 }

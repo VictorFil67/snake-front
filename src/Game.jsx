@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Cell } from "./Cell";
 
 export const Game = () => {
@@ -32,12 +32,7 @@ export const Game = () => {
       return position;
     }
   }
-  useEffect(() => {
-    const timerId = gameСycle();
-    return () => clearInterval(timerId);
-  }, [snake]);
-
-  function gameСycle() {
+  const gameСycle = useCallback(() => {
     const timerId = setTimeout(() => {
       console.log("first");
       const newSnake = snake;
@@ -55,7 +50,12 @@ export const Game = () => {
       setSnake(newSnake.slice(1));
     }, speed);
     return timerId;
-  }
+  }, [snake]);
+
+  useEffect(() => {
+    const timerId = gameСycle();
+    return () => clearInterval(timerId);
+  }, [gameСycle]);
 
   return (
     <div>

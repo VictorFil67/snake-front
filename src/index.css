@@ -29,3 +29,36 @@ code {
 .snake {
   background-color: green;
 }
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(25, 26, 21, 0.1);
+  z-index: 2;
+  overflow: auto;
+}
+.modal {
+  position: relative;
+  border: 2px solid red;
+  padding: 0 50px;
+  color: red;
+  font-size: 48px;
+  background-color: green;
+  border-radius: 14px;
+}
+
+.closeButton {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  border: none;
+  background-color: transparent;
+  padding: 0;
+  cursor: pointer;
+}

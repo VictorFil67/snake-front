@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-// import { Cell } from "./Cell";
+import { createPortal } from "react-dom";
+import { GameOverModal } from "./GameOverModal";
 
 export const Game = () => {
   const BoardSize = 10;
@@ -7,11 +8,10 @@ export const Game = () => {
   const board = [];
   const speed = 500;
   const [snake, setSnake] = useState([[1, 1]]);
-  //   const [direction, setDirection] = useState("LEFT");
-  const [food, setFood] = useState(
-    [0, 0]
-    // [Math.floor(Math.random() * 10), Math.floor(Math.random() * 10)]
-  );
+  const [food, setFood] = useState([0, 0]);
+  const [gameOver, setGameOver] = useState(false);
+  //   const [modal, setModal] = useState(false);
+
   const directions = useMemo(
     () => ["ArrowDown", "ArrowUp", "ArrowRight", "ArrowLeft", "Space"],
     []
@@ -22,9 +22,7 @@ export const Game = () => {
     row.push(j);
   }
   for (let i = 0; i < BoardSize; i++) {
-    // console.log(row);
     board.push(row);
-    // console.log(board);
   }
 
   function checkSnakePosition(position) {
@@ -72,9 +70,8 @@ export const Game = () => {
 
   const gameСycle = useCallback(() => {
     const timerId = setTimeout(() => {
-      //   console.log("first");
       const newSnake = snake;
-      //   console.log(snake);
+
       let moveSnake = [];
       switch (direction) {
         case directions[0]:
@@ -101,6 +98,17 @@ export const Game = () => {
         checkSnakePosition(newSnake[snake.length - 1][0] + moveSnake[0]),
         checkSnakePosition(newSnake[snake.length - 1][1] + moveSnake[1]),
       ];
+
+      if (
+        newSnake.some(
+          (segment) => segment[0] === head[0] && segment[1] === head[1]
+        )
+      ) {
+        setGameOver(true);
+        clearTimeout(timerId);
+        return;
+      }
+
       newSnake.push(head);
       let notFeed = 1;
       if (head[0] === food[0] && head[1] === food[1]) {
@@ -113,11 +121,15 @@ export const Game = () => {
   }, [snake, direction, directions, food, addFood]);
 
   useEffect(() => {
-    if (direction !== directions[4]) {
+    if (direction !== directions[4] && !gameOver) {
       const timerId = gameСycle();
       return () => clearInterval(timerId);
     }
-  }, [gameСycle, direction, directions]);
+  }, [gameСycle, direction, directions, gameOver]);
+
+  //   if (gameOver) {
+  //     return <h1>Game Over!</h1>;
+  //   }
 
   return (
     <div>
@@ -135,6 +147,11 @@ export const Game = () => {
           </div>
         );
       })}
+      {gameOver &&
+        createPortal(
+          <GameOverModal setGameOver={setGameOver} />,
+          document.body
+        )}
     </div>
   );
 };

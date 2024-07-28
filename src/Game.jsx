@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { Cell } from "./Cell";
+// import { Cell } from "./Cell";
 
 export const Game = () => {
   const BoardSize = 10;
@@ -13,7 +13,7 @@ export const Game = () => {
     // [Math.floor(Math.random() * 10), Math.floor(Math.random() * 10)]
   );
   const directions = useMemo(
-    () => ["ArrowDown", "ArrowUp", "ArrowRight", "ArrowLeft"],
+    () => ["ArrowDown", "ArrowUp", "ArrowRight", "ArrowLeft", "Space"],
     []
   );
   const [direction, setDirection] = useState("ArrowDown");
@@ -40,7 +40,9 @@ export const Game = () => {
   const handleKeyDown = useCallback(
     (e) => {
       console.log(e.key);
-      const index = directions.indexOf(e.key);
+      console.log(e.code);
+      const index = directions.indexOf(e.code);
+      console.log(directions.indexOf(e.code));
       if (index > -1) {
         setDirection(directions[index]);
       }
@@ -87,6 +89,9 @@ export const Game = () => {
         case directions[3]:
           moveSnake = [0, -1];
           break;
+        case directions[4]:
+          moveSnake = [0, 0];
+          break;
 
         default:
           moveSnake = [1, 0];
@@ -108,22 +113,24 @@ export const Game = () => {
   }, [snake, direction, directions, food, addFood]);
 
   useEffect(() => {
-    const timerId = gameСycle();
-    return () => clearInterval(timerId);
-  }, [gameСycle]);
+    if (direction !== directions[4]) {
+      const timerId = gameСycle();
+      return () => clearInterval(timerId);
+    }
+  }, [gameСycle, direction, directions]);
 
   return (
     <div>
       {board.map((row, indR) => {
         return (
           <div key={indR} className="row">
-            {row.map((cell, indC) => {
+            {row.map((_, indC) => {
               let type =
                 snake.some((el) => el[0] === indR && el[1] === indC) && "snake";
               if (type !== "snake") {
                 type = food[0] === indR && food[1] === indC && "food";
               }
-              return <Cell key={indC} type={type}></Cell>;
+              return <div key={indC} className={`cell ${type}`}></div>;
             })}
           </div>
         );

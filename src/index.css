@@ -21,3 +21,11 @@ code {
 .row {
   display: flex;
 }
+
+.food {
+  background-color: yellow;
+}
+
+.snake {
+  background-color: green;
+}

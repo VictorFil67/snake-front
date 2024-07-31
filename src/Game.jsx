@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import { GameOverModal } from "./GameOverModal";
+import axios from "axios";
 
 export const Game = () => {
   const BoardSize = 10;
@@ -14,12 +15,14 @@ export const Game = () => {
   const [point, setPoint] = useState(0);
   const [prevPoint, setPrevPoint] = useState(0);
   const [feedCount, setFeedCount] = useState(0);
+  const [direction, setDirection] = useState("ArrowDown");
+  const [name, setName] = useState("");
+  const [highScores, setHighScores] = useState([]);
 
   const directions = useMemo(
     () => ["ArrowDown", "ArrowUp", "ArrowRight", "ArrowLeft", "Space"],
     []
   );
-  const [direction, setDirection] = useState("ArrowDown");
 
   for (let j = 0; j < BoardSize; j++) {
     row.push(j);
@@ -150,24 +153,51 @@ export const Game = () => {
     }
   }, [gameСycle, direction, directions, gameOver]);
 
+  useEffect(() => {
+    const fetchScores = async () => {
+      const result = await axios.get("http://localhost:5000/api/records");
+      setHighScores(result.data);
+    };
+    fetchScores();
+  }, []);
+
   return (
-    <div>
-      <h1>Score: {point}</h1>
-      <h1>Speed: {1000 / speed}sell/s</h1>
-      {board.map((row, indR) => {
-        return (
-          <div key={indR} className="row">
-            {row.map((_, indC) => {
-              let type =
-                snake.some((el) => el[0] === indR && el[1] === indC) && "snake";
-              if (type !== "snake") {
-                type = food[0] === indR && food[1] === indC && "food";
-              }
-              return <div key={indC} className={`cell ${type}`}></div>;
-            })}
-          </div>
-        );
-      })}
+    <div className="wrap">
+      <div>
+        <input
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="Enter your name"
+        />
+        <h1>Score: {point}</h1>
+        <h2>Speed: {1000 / speed}sell/s</h2>
+        <h2>Records</h2>
+        <ol>
+          {highScores.map((score) => (
+            <li key={score.id}>
+              {score.name}: {score.points}
+            </li>
+          ))}
+        </ol>
+      </div>
+      <div>
+        {board.map((row, indR) => {
+          return (
+            <div key={indR} className="row">
+              {row.map((_, indC) => {
+                let type =
+                  snake.some((el) => el[0] === indR && el[1] === indC) &&
+                  "snake";
+                if (type !== "snake") {
+                  type = food[0] === indR && food[1] === indC && "food";
+                }
+                return <div key={indC} className={`cell ${type}`}></div>;
+              })}
+            </div>
+          );
+        })}
+      </div>
       {gameOver &&
         createPortal(
           <GameOverModal setGameOver={setGameOver} />,

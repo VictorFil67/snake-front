@@ -165,6 +165,7 @@ export const Game = () => {
     <div className="wrap">
       <div>
         <input
+          className="nameField"
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
@@ -172,14 +173,14 @@ export const Game = () => {
         />
         <h1>Score: {point}</h1>
         <h2>Speed: {1000 / speed}sell/s</h2>
-        <h2>Records</h2>
-        <ol>
-          {highScores.map((score) => (
-            <li key={score.id}>
-              {score.name}: {score.points}
+        <h2>Records:</h2>
+        <ul className="list">
+          {highScores.map((score, idx) => (
+            <li key={score.id} className="item">
+              {idx + 1} {score.name}: {score.points}
             </li>
           ))}
-        </ol>
+        </ul>
       </div>
       <div>
         {board.map((row, indR) => {

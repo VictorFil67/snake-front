@@ -17,7 +17,9 @@ h3,
 h4,
 h5,
 h6,
-p {
+p,
+ul,
+li {
   margin: 0;
   padding: 0;
 }
@@ -25,6 +27,15 @@ p {
 .wrap {
   display: flex;
   gap: 20px;
+  padding: 40px;
+}
+
+.nameField {
+  padding: 10px;
+  border-radius: 30px;
+  outline: none;
+  border: 1px solid black;
+  font-size: 18px;
 }
 
 .cell {
@@ -77,4 +88,29 @@ p {
   background-color: transparent;
   padding: 0;
   cursor: pointer;
+}
+
+.list {
+  list-style-type: none;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 10px 30px;
+  font-size: 18px;
+}
+
+.item {
+  padding: 3px;
+}
+
+.item:first-child {
+  color: red;
+}
+
+.item:nth-child(2) {
+  color: blue;
+}
+
+.item:nth-child(3) {
+  color: green;
 }

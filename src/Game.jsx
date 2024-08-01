@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import { GameOverModal } from "./GameOverModal";
-// import axios from "axios";
+
 import { api } from "./api/api";
 
 export const Game = () => {
@@ -45,10 +45,8 @@ export const Game = () => {
 
   const handleKeyDown = useCallback(
     (e) => {
-      //   console.log(e.key);
-      //   console.log(e.code);
       const index = directions.indexOf(e.code);
-      //   console.log(directions.indexOf(e.code));
+
       if (index > -1) {
         setDirection(directions[index]);
       }
@@ -132,7 +130,7 @@ export const Game = () => {
         notFeed = 0;
         addFood();
         setFeedCount(feedCount + 1);
-        // console.log(feedCount);
+
         if (feedCount === 0 || feedCount % 3 === 0) {
           setPoints(points + 1);
         } else if (feedCount === 1 || feedCount % 3 === 1) {
@@ -194,7 +192,7 @@ export const Game = () => {
         </button>
         <h1>Score: {points}</h1>
         <h2>Speed: {1000 / speed}sell/s</h2>
-        <h2>Records:</h2>
+        <h2 className="records">Records:</h2>
         <ul className="list">
           {highScores.map((score, idx) => (
             <li key={score.id} className="item">

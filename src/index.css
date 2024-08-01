@@ -80,6 +80,10 @@ li {
   background-color: green;
 }
 
+.records {
+  margin-top: 20px;
+}
+
 .list {
   list-style-type: none;
   display: flex;

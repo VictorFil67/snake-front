@@ -181,7 +181,7 @@ export const Game = () => {
 
   return (
     <div className="wrap">
-      <div>
+      <div className="info">
         <input
           className="nameField"
           type="text"

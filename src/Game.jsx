@@ -1,7 +1,8 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import { GameOverModal } from "./GameOverModal";
-import axios from "axios";
+// import axios from "axios";
+import { api } from "./api/api";
 
 export const Game = () => {
   const BoardSize = 10;
@@ -9,10 +10,11 @@ export const Game = () => {
   const board = [];
   const speedInterval = 100;
   const [speed, setSpeed] = useState(500);
+  const [start, setStart] = useState(false);
   const [snake, setSnake] = useState([[1, 1]]);
   const [food, setFood] = useState([0, 0]);
   const [gameOver, setGameOver] = useState(false);
-  const [point, setPoint] = useState(0);
+  const [points, setPoints] = useState(0);
   const [prevPoint, setPrevPoint] = useState(0);
   const [feedCount, setFeedCount] = useState(0);
   const [direction, setDirection] = useState("ArrowDown");
@@ -74,6 +76,16 @@ export const Game = () => {
     } while (snake.some((el) => el[0] === newFood[0] && el[1] === newFood[1]));
   }, [snake]);
 
+  const saveScore = useCallback(async () => {
+    await api.post("/score", {
+      name,
+      points,
+    });
+    console.log(name, points);
+    const result = await api("records");
+    setHighScores(result.data);
+  }, [name, points]);
+
   const gameСycle = useCallback(() => {
     const timerId = setTimeout(() => {
       const newSnake = snake;
@@ -107,30 +119,32 @@ export const Game = () => {
 
       if (newSnake.some((el) => el[0] === head[0] && el[1] === head[1])) {
         setGameOver(true);
+        setStart(false);
+        saveScore();
         clearTimeout(timerId);
         return;
       }
 
       newSnake.push(head);
       let notFeed = 1;
-      setPrevPoint(point);
+      setPrevPoint(points);
       if (head[0] === food[0] && head[1] === food[1]) {
         notFeed = 0;
         addFood();
         setFeedCount(feedCount + 1);
         // console.log(feedCount);
         if (feedCount === 0 || feedCount % 3 === 0) {
-          setPoint(point + 1);
+          setPoints(points + 1);
         } else if (feedCount === 1 || feedCount % 3 === 1) {
-          setPoint(point + 5);
+          setPoints(points + 5);
         } else if (feedCount === 2 || feedCount % 3 === 2) {
-          setPoint(point + 10);
+          setPoints(points + 10);
         }
       }
-      if (Math.floor(prevPoint / 50) < Math.floor(point / 50)) {
+      if (Math.floor(prevPoint / 50) < Math.floor(points / 50)) {
         setSpeed(speed - speedInterval);
       }
-      console.log(Math.floor(prevPoint / 100), Math.floor(point / 50));
+      console.log(Math.floor(prevPoint / 100), Math.floor(points / 50));
       setSnake(newSnake.slice(notFeed));
     }, speed);
     return timerId;
@@ -140,22 +154,26 @@ export const Game = () => {
     directions,
     food,
     addFood,
-    point,
+    points,
     feedCount,
     speed,
     prevPoint,
+    saveScore,
   ]);
 
   useEffect(() => {
     if (direction !== directions[4] && !gameOver) {
-      const timerId = gameСycle();
+      let timerId = "";
+      if (start) {
+        timerId = gameСycle();
+      }
       return () => clearInterval(timerId);
     }
-  }, [gameСycle, direction, directions, gameOver]);
+  }, [gameСycle, direction, directions, gameOver, start]);
 
   useEffect(() => {
     const fetchScores = async () => {
-      const result = await axios.get("http://localhost:5000/api/records");
+      const result = await api("/records");
       setHighScores(result.data);
     };
     fetchScores();
@@ -171,7 +189,8 @@ export const Game = () => {
           onChange={(e) => setName(e.target.value)}
           placeholder="Enter your name"
         />
-        <h1>Score: {point}</h1>
+        <button onClick={() => setStart(true)}>Start</button>
+        <h1>Score: {points}</h1>
         <h2>Speed: {1000 / speed}sell/s</h2>
         <h2>Records:</h2>
         <ul className="list">

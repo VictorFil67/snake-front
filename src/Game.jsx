@@ -189,7 +189,9 @@ export const Game = () => {
           onChange={(e) => setName(e.target.value)}
           placeholder="Enter your name"
         />
-        <button onClick={() => setStart(true)}>Start</button>
+        <button className="startBtn" onClick={() => setStart(true)}>
+          Start
+        </button>
         <h1>Score: {points}</h1>
         <h2>Speed: {1000 / speed}sell/s</h2>
         <h2>Records:</h2>

@@ -39,8 +39,26 @@ li {
   padding: 10px;
   border-radius: 30px;
   outline: none;
-  border: 1px solid black;
+  border: 1px solid rgb(161, 158, 158);
   font-size: 18px;
+  margin-bottom: 10px;
+  background-color: rgb(235, 227, 227);
+}
+
+.startBtn {
+  padding: 10px;
+  border-radius: 30px;
+  background-color: aqua;
+  color: blueviolet;
+  font-size: 18px;
+  border: none;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+.startBtn:hover,
+.startBtn:active {
+  background-color: aquamarine;
 }
 
 .cell {
